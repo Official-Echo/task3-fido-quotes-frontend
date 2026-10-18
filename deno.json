@@ -5,6 +5,8 @@
     "dev": "vite",
     "build": "vite build",
     "start": "deno serve -A _fresh/server.js",
+    "start:local": "deno serve -A --env-file=.env _fresh/server.js",
+    "test": "deno test",
     "update": "deno run -A -r jsr:@fresh/update ."
   },
   "lint": {
