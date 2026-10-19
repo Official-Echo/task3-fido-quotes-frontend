@@ -9,10 +9,21 @@ function fakeEnv(map: Record<string, string | undefined>) {
 	};
 }
 
-Deno.test("loadAppConfig throws when BACKEND_URL is missing", () => {
-	expect(() => loadAppConfig(fakeEnv({}))).toThrow(
-		/BACKEND_URL is not set/,
-	);
+Deno.test("loadAppConfig warns and defaults when BACKEND_URL is missing", () => {
+	const warn = console.warn;
+	const warnings: unknown[][] = [];
+
+	console.warn = (...args) => warnings.push(args);
+
+	try {
+		const config = loadAppConfig(fakeEnv({}));
+
+		expect(config.backendUrl.href).toBe("http://localhost:8080/");
+		expect(warnings).toHaveLength(1);
+		expect(String(warnings[0][0])).toMatch(/BACKEND_URL is not set/);
+	} finally {
+		console.warn = warn;
+	}
 });
 
 Deno.test("loadAppConfig parses a valid URL and appends trailing slash", () => {
