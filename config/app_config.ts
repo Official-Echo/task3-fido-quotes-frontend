@@ -9,11 +9,14 @@ export function loadAppConfig(
 ): AppConfig {
 	const rawUrl = env.get(BACKEND_URL_VARIABLE);
 	if (!rawUrl) {
-		throw new Error(
-			`Environment variable ${BACKEND_URL_VARIABLE} is not set`,
+		console.warn(
+			`Environment variable ${BACKEND_URL_VARIABLE} is not set. Defaulting to http://localhost:8080`,
 		);
 	}
-	return { backendUrl: withTrailingSlash(new URL(rawUrl)) };
+
+	const backendUrl = rawUrl || "http://localhost:8080";
+
+	return { backendUrl: withTrailingSlash(new URL(backendUrl)) };
 }
 
 function withTrailingSlash(url: URL): URL {
