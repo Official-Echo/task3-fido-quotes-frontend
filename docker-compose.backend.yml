@@ -1,4 +1,5 @@
 name: quotes-services
+
 services:
   postgres:
     image: postgres:17.2
@@ -10,10 +11,17 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: quotes_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d quotes_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   spring:
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     image: fadingafterglow/quotes:latest
     ports:
       - "127.0.0.1:8080:8080"
