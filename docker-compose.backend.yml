@@ -1,0 +1,24 @@
+name: quotes-services
+services:
+  postgres:
+    image: postgres:17.2
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - quotes_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: quotes_db
+
+  spring:
+    depends_on:
+      - postgres
+    image: fadingafterglow/quotes:latest
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/quotes_db"
+
+volumes:
+  quotes_db:
